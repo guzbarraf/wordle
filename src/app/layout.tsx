@@ -20,10 +20,9 @@ export default function RootLayout({
       <body className={inter.className}>{children}</body>
     </html>*/
     <html lang="en">
-      <body className={`${inter.className} bg-slate-50 dark:bg-[#0d1117]`}>
+      <body className={`${inter.className} bg-slate-50 dark:bg-[#0d1117] flex flex-row min-h-screen justify-center items-center`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <ThemeSwitcher />
-          <main>{children}</main>
+          {children}
         </ThemeProvider>
       </body>
     </html>
