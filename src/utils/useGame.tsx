@@ -1,10 +1,6 @@
 'use client'
 import {useEffect, useState} from "react";
 
-type useGameProps = {
-  cantGetWord: number,
-}
-
 const typeLetter = {
   empty: 'empty',
   ok: 'ok',
@@ -12,144 +8,196 @@ const typeLetter = {
   not_exist: 'not_exist',
 };
 
-export const useGame = ({cantGetWord}: useGameProps) => {
+export const useGame = () => {
   const maxLetters = 5;
   const maxWorks = 5;
   let responseLetter = {
     status: typeLetter.not_exist,
-    bgColor: 'bg-gray-300',
+    bgColor: 'bg-gray-400',
     validate: false,
   };
   const [showHowPlay, setShowHowPlay] = useState(true);
+  const [showStats, setShowStats] = useState(false);
+  const [stats, setStats] = useState({
+    plays: 0,
+    wins: 0,
+    startTime: 0,
+  });
   const [gameOver, setGameOver] = useState('');
+  const [timer, setTimer] = useState('00:00');
+  const [numGetWord, setNumGetWord] = useState(0);
   const [word, setWord] = useState('');
   const [originalWord, setOriginalWord] = useState('');
-  const [wordIndexes, setWordIndexes] = useState([]);
-  const [keyPressed, setKeyPressed] = useState('');
+  const [wordIndexes, setWordIndexes] = useState(["", "", "", "", ""]);
   const [lastX, setLastX] = useState(0);
   const [lastY, setLastY] = useState(0);
   const [validateRow, setValidateRow] = useState([
     false, false, false, false, false
   ]);
-  const [guesses, setGuesses] = useState([
+  const guessesTemplate = [
     [
-      {x: 1, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 2, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 3, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 4, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 5, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
+      {x: 1, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 2, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 3, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 4, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 5, y: 1, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
     ], [
-      {x: 1, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 2, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 3, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 4, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 5, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
+      {x: 1, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 2, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 3, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 4, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 5, y: 2, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
     ], [
-      {x: 1, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 2, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 3, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 4, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 5, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
+      {x: 1, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 2, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 3, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 4, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 5, y: 3, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
     ], [
-      {x: 1, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 2, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 3, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 4, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 5, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
+      {x: 1, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 2, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 3, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 4, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 5, y: 4, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
     ], [
-      {x: 1, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 2, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 3, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 4, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
-      {x: 5, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-300'},
+      {x: 1, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 2, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 3, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 4, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
+      {x: 5, y: 5, value: '', status: typeLetter.empty, bgColor: 'bg-gray-400'},
     ]
-  ]);
+  ];
+  const [guesses, setGuesses] = useState(guessesTemplate);
+  const timeCountDown = 5 * 60;
+  const { minutes, seconds, resetCounter } = useRecursiveCounter(timeCountDown);
 
   useEffect(() => {
     getWord().then((value) => {
-      // console.log('getWord() => value =>', value);
       setOriginalWord(value);
       setWord(fnCleanWord(value));
-    }, (error) => {
-      // console.error('error =>', error);
-    });
-  }, [cantGetWord]);
+      setGameOver('');
+      setLastX(0);
+      setLastY(0);
+      setWordIndexes(["", "", "", "", ""]);
+      setValidateRow([false, false, false, false, false]);
+    }, (error) => {});
+  }, [numGetWord]);
 
   useEffect(() => {
     if (word) {
-      // console.log('word =>', word);
       setWordIndexes(word.split(''));
     }
   }, [word]);
 
-  /*useEffect(() => {
-    if (wordIndexes) {
-      console.log('wordIndexes =>', wordIndexes);
+  useEffect(() => {
+    if (seconds <= 0) {
+      newGame();
+      return;
+    } else {
+      const time = `${minutes < 1 ? '00' : minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      setTimer(time);
     }
-  }, [wordIndexes]);*/
+  }, [minutes, seconds]);
 
-  useEffect(() => {
-    console.log('guesses =>', guesses);
-  }, [guesses]);
+  function newGame() {
+    setGuesses(guessesTemplate);
+    setNumGetWord(numGetWord + 1);
+  }
 
-  useEffect(() => {
-    if (keyPressed) {
-      // console.log('keyPressed =>', keyPressed);
-      fnKeyPressed();
+  function fnCloseStats() {
+    setShowStats(false);
+
+    if (gameOver === 'win' || gameOver === 'loose') {
+      newGame();
     }
-  }, [keyPressed]);
+  }
 
-  useEffect(() => {
-    console.log('validateRow =>', validateRow);
-    fnValidateGame();
-  }, [fnValidateGame, validateRow]);
+  function fnDeletedLetter() {
+    if (lastX === 0 && lastY === 0) {} else {
+      const arGuesses = guesses;
+      const arValidate = validateRow;
 
-  function fnKeyPressed() {
+      const _lastX = lastX === 0 ? maxLetters - 1 : lastX - 1;
+      const _lastY = lastX === 0 ? lastY - 1 : lastY;
+
+      setLastY(_lastY);
+      setLastX(_lastX);
+
+      responseLetter = {
+        status: typeLetter.not_exist,
+        bgColor: 'bg-gray-400',
+        validate: false,
+      };
+
+      arGuesses[_lastY][_lastX].value = '';
+      arGuesses[_lastY][_lastX].status = responseLetter?.status;
+      arGuesses[_lastY][_lastX].bgColor = responseLetter?.bgColor;
+      arValidate[_lastY] = responseLetter?.validate;
+
+      setValidateRow(arValidate);
+      setGuesses(arGuesses);
+    }
+  }
+
+  function fnKeyPressed(keyPressed: string) {
     if (lastY < maxWorks) {
       const arGuesses = guesses;
       const arValidate = validateRow;
 
       responseLetter = fnCheckLetterInWord(keyPressed, lastX);
-      // console.log('responseLetter =>', responseLetter);
 
       arGuesses[lastY][lastX].value = keyPressed;
       arGuesses[lastY][lastX].status = responseLetter?.status;
       arGuesses[lastY][lastX].bgColor = responseLetter?.bgColor;
       arValidate[lastY] = responseLetter?.validate;
-      // console.log('fnKeyPressed() =>', arGuesses);
-      console.log('fnKeyPressed() => arValidate =>', arValidate);
 
       setValidateRow(arValidate);
       setGuesses(arGuesses);
+
+      if (lastX === maxLetters - 1 || lastY === maxWorks - 1) {
+        fnValidateGame();
+      }
 
       setLastY(lastX === maxLetters - 1 ? lastY + 1 : lastY);
       setLastX(lastX < maxLetters - 1 ? lastX + 1 : 0);
 
     } else {
-      console.log('SE TERMINÓ EL JUEGO');
+      setGameOver('loose');
+      fnValidateGame();
     }
   }
 
   function fnValidateGame() {
-    console.log('fnValidateGame() => guesses =>', guesses);
-    let counterLetter = 0;
+    let foundWord = false;
 
     guesses.map((guess, index) => {
-      guess.filter((item: object, _index: number) => {
+      const response = guess.filter((item: object, _index: number) => {
         if (item?.status === typeLetter.ok) {
-          counterLetter++;
           return item;
         }
       });
+
+      if (response.length === 5) {
+        foundWord = true;
+      }
     });
 
-    console.log('counterLetter =>', counterLetter);
-    if (counterLetter === maxLetters) {
+    if (foundWord) {
+      setStats({
+        ...stats,
+        plays: stats.plays + 1,
+        wins: stats.wins + 1,
+      });
       setGameOver('win');
-    } else if (lastY === maxWorks && lastX === maxLetters){
+      setShowStats(true);
+    } else if (lastY === maxWorks - 1 && lastX === maxLetters - 1){
       setGameOver('loose');
+      setStats({
+        ...stats,
+        plays: stats.plays + 1,
+      });
+      setShowStats(true);
     }
-
   }
 
   function fnCheckLetterInWord(letter: string, index: number) {
@@ -168,11 +216,6 @@ export const useGame = ({cantGetWord}: useGameProps) => {
         return wordI;
       }
     });
-
-    console.log('filterLetters =>', filterLetters);
-    console.log('indexWord =>', indexWord);
-    console.log('index =>', index);
-    // console.log('index === maxLetters - 1 =>', index === maxLetters - 1);
 
     if (index === maxLetters - 1) {
       _validate = true;
@@ -201,11 +244,6 @@ export const useGame = ({cantGetWord}: useGameProps) => {
     } else if (filterLetters.length > 1) {
       const valueIndexWord = indexWord.filter((iw: number) => iw === index);
 
-      console.log('letter =>', letter);
-      console.log('indexWord =>', indexWord);
-      console.log('index =>', index);
-      console.log('valueIndexWord =>', valueIndexWord);
-
       if (valueIndexWord[0] === index) {
         resp = {
           status: typeLetter.ok,
@@ -227,18 +265,12 @@ export const useGame = ({cantGetWord}: useGameProps) => {
       };
     }
 
-    console.log('resp =>', resp);
-
     return resp;
   }
 
   function fnCleanWord(word: string) {
     const accents = {'á':'a','ä':'a','é':'e','ë':'e','í':'i','ï':'i','ó':'o','ö':'o','ú':'u','ü':'u'};
-    const cleanWord = word.split('').map( (letter: string) => accents[letter] || letter).join('').toString();
-
-    console.log('cleanWord =>', cleanWord);
-
-    return cleanWord;
+    return word.split('').map( (letter: string) => accents[letter] || letter).join('').toString();
   }
 
   async function getWord() {
@@ -252,9 +284,7 @@ export const useGame = ({cantGetWord}: useGameProps) => {
       .then(data => {
         return data;
       })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+      .catch(error => {});
 
     return res?.word;
   }
@@ -266,7 +296,46 @@ export const useGame = ({cantGetWord}: useGameProps) => {
     originalWord,
     guesses,
     validateRow,
-    setKeyPressed,
+    fnKeyPressed,
+    fnDeletedLetter,
     gameOver,
+    showStats,
+    setShowStats,
+    fnCloseStats,
+    stats,
+    timer,
   }
 };
+
+function useRecursiveCounter(totalTimeInSeconds: number) {
+  const [secondsRemaining, setSecondsRemaining] = useState(totalTimeInSeconds);
+  const [activeCounter, setActiveCounter] = useState(true);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (activeCounter && secondsRemaining > 0) {
+      intervalId = setInterval(() => {
+        setSecondsRemaining(secondsRemaining - 1);
+      }, 1000);
+    } else if (activeCounter && secondsRemaining === 0) {
+      intervalId = setInterval(() => {
+        setSecondsRemaining(totalTimeInSeconds);
+      }, 1000);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [secondsRemaining, activeCounter, totalTimeInSeconds]);
+
+  const resetCounter = () => {
+    setActiveCounter(true);
+    setSecondsRemaining(totalTimeInSeconds);
+  };
+
+  const minutes = Math.floor(secondsRemaining / 60);
+  const seconds = secondsRemaining % 60;
+
+  return { minutes, seconds, resetCounter };
+}
