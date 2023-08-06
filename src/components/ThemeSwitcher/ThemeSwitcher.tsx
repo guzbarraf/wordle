@@ -1,10 +1,18 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import Image from "next/image";
+import ImgDay from "../../../public/switch-day.svg";
+import ImgNight from "../../../public/switch-night.svg";
 
 export const ThemeSwitcher = () => {
   const [mounted, setMounted] = useState(false);
+  const [imgSwitch, setImgSwitch] = useState(ImgDay);
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    theme === "light" ? setImgSwitch(ImgDay) : setImgSwitch(ImgNight);
+  }, [theme]);
 
   useEffect(() => {
     setMounted(true);
@@ -16,10 +24,14 @@ export const ThemeSwitcher = () => {
 
   return (
     <button
-      className={`w-fit absolute right-5 top-2 p-2 rounded-md hover:scale-110 active:scale-100 duration-200 bg-slate-200 dark:bg-[#212933]`}
+      className={`w-fit top-2 p-2 hover:scale-110 active:scale-100 duration-200`}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
-      {theme === "light" ? "Dark" : "Light"}
+      <Image
+        src={imgSwitch}
+        alt={''}
+        priority={true}
+      />
     </button>
   );
 };
