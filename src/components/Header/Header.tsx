@@ -4,19 +4,26 @@ import ThemeSwitcher from "@/components/ThemeSwitcher";
 import Image from "next/image";
 import ImgHelp from '@/../public/help.svg';
 import ImgStats from '@/../public/stats.svg';
-export const Header = () => {
+
+type HeaderProps = {
+  setShowHowPlay: any;
+}
+
+export const Header = ({setShowHowPlay}: HeaderProps) => {
 
   return (
     <header className={'max-w-[638px] w-full h-[80px] bg-gray-300 dark:invert flex items-center justify-between rounded-lg'}>
       <div className={'w-32 pl-6 hover:scale-110 active:scale-100 duration-200'}>
-        <button>
+        <button
+          onClick={() => {
+            console.log('Help');
+            setShowHowPlay(true)
+          }}
+        >
           <Image
             src={ImgHelp}
             alt={''}
             priority={true}
-            onClick={() => {
-              console.log('Help');
-            }}
           />
         </button>
       </div>
