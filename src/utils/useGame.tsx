@@ -20,6 +20,7 @@ export const useGame = ({cantGetWord}: useGameProps) => {
     bgColor: 'bg-gray-300',
     validate: false,
   };
+  const [showHowPlay, setShowHowPlay] = useState(true);
   const [gameOver, setGameOver] = useState('');
   const [word, setWord] = useState('');
   const [originalWord, setOriginalWord] = useState('');
@@ -259,6 +260,8 @@ export const useGame = ({cantGetWord}: useGameProps) => {
   }
 
   return {
+    showHowPlay,
+    setShowHowPlay,
     word,
     originalWord,
     guesses,
