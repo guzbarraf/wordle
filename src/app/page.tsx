@@ -19,7 +19,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4 min-w-full max-w-5xl bg-slate-50 dark:bg-slate-900">
-      <Header/>
+      <Header setShowHowPlay={setShowHowPlay}/>
 
       <div className={'text-black dark:invert'}>{word}</div>
 
