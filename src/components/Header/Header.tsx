@@ -7,9 +7,10 @@ import ImgStats from '@/../public/stats.svg';
 
 type HeaderProps = {
   setShowHowPlay: any;
+  setShowStats: any;
 }
 
-export const Header = ({setShowHowPlay}: HeaderProps) => {
+export const Header = ({setShowHowPlay, setShowStats}: HeaderProps) => {
 
   return (
     <header className={'max-w-[638px] w-full h-[80px] bg-gray-300 dark:invert flex items-center justify-between rounded-lg'}>
@@ -32,14 +33,16 @@ export const Header = ({setShowHowPlay}: HeaderProps) => {
       </div>
       <div className={'w-32 pr-6 flex items-center justify-between '}>
         <div className={'hover:scale-110 active:scale-100 duration-200 '}>
-          <button>
+          <button
+            onClick={() => {
+              console.log('Stats');
+              setShowStats(true);
+            }}
+          >
             <Image
               src={ImgStats}
               alt={''}
               priority={true}
-              onClick={() => {
-                console.log('Stats');
-              }}
             />
           </button>
         </div>
