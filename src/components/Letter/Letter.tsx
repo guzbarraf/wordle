@@ -16,7 +16,7 @@ export const Letter = ({
   bgColor,
   validate,
 }: LetterProps) => {
-  
+
   return (
     <div
       id={id}
