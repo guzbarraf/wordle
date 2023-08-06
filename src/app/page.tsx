@@ -4,33 +4,40 @@ import {useGame} from "@/utils/useGame";
 import Keyboard from "@/components/Keyboard";
 import {Header} from "@/components/Header/Header";
 import HowPlay from "@/components/HowPlay";
+import Stats from "@/components/Stats";
 
 export default function Home() {
   const {
     showHowPlay,
+    setShowStats,
     setShowHowPlay,
     word,
     originalWord,
     guesses,
     validateRow,
-    setKeyPressed,
+    fnKeyPressed,
+    fnDeletedLetter,
     gameOver,
-  } = useGame(1);
+    showStats,
+    fnCloseStats,
+    stats,
+    timer,
+  } = useGame();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4 min-w-full max-w-5xl bg-slate-50 dark:bg-slate-900">
-      <Header setShowHowPlay={setShowHowPlay}/>
+      <Header setShowHowPlay={setShowHowPlay} setShowStats={setShowStats}/>
 
       <div className={'text-black dark:invert'}>{word}</div>
 
       <GridLetters guesses={guesses} validateRow={validateRow}/>
 
-      <Keyboard setKeyPressed={setKeyPressed}/>
+      <Keyboard fnKeyPressed={fnKeyPressed} fnDeletedLetter={fnDeletedLetter}/>
 
       {showHowPlay ? <HowPlay setShowHowPlay={setShowHowPlay}/> : null}
 
-      {gameOver === 'win' ? (
-        <div className={'text-black dark:invert'}>WIN!!!</div>
+      {showStats ? (
+        <Stats fnCloseStats={fnCloseStats} stats={stats} word={originalWord} gameOver={gameOver} timer={timer}/>
       ) : null}
 
     </main>
