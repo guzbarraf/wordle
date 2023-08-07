@@ -28,8 +28,6 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-4 min-w-full max-w-5xl bg-slate-50 dark:bg-slate-900">
       <Header setShowHowPlay={setShowHowPlay} setShowStats={setShowStats}/>
 
-      <div className={'text-black dark:invert'}>{word}</div>
-
       <GridLetters guesses={guesses} validateRow={validateRow}/>
 
       <Keyboard fnKeyPressed={fnKeyPressed} fnDeletedLetter={fnDeletedLetter}/>
