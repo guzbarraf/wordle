@@ -1,3 +1,29 @@
+# WORDLE - FRONTEND
+## by Rafael Guzmán Barranco (Guzbarraf)
+
+### El proyecto está en NextJs 13 con el app directory.
+
+Primero hay que clonar el proyecto.
+```bash
+git clone https://github.com/guzbarraf/wordle.git
+```
+
+Segundo instalarlo.
+```bash
+npm install
+```
+
+Tercero iniciarlo
+```bash
+npm run dev
+```
+
+## Saludos!
+
+
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
